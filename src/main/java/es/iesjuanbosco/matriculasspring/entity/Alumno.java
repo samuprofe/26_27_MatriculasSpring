@@ -3,6 +3,7 @@ package es.iesjuanbosco.matriculasspring.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter @Setter @Builder @NoArgsConstructor
@@ -20,8 +21,17 @@ public class Alumno {
     @Column(length = 200,nullable = false )
     private String apellidos;
 
-    @Column(length = 100,nullable = false )
+    @Column(length = 100)
     private String email;
 
     private LocalDate fechaNacimiento;
+
+    @Column(length = 10)
+    private String DNI;
+
+    @Column(length = 15 )
+    private String telefono;
+
+    @Column(precision = 7, scale = 3) //dentre 0 y 999.999,99
+    private BigDecimal ImporteBeca;
 }
