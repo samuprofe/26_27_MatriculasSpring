@@ -3,9 +3,7 @@ package es.iesjuanbosco.matriculasspring.controller;
 import es.iesjuanbosco.matriculasspring.entity.Alumno;
 import es.iesjuanbosco.matriculasspring.repository.AlumnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,4 +25,22 @@ public class AlumnoController {
     public Alumno findById(@PathVariable Long id) {
         return alumnoRepository.findById(id).get();
     }
+
+    @DeleteMapping("/alumnos/{id}")
+    public void deleteById(@PathVariable Long id)
+    {
+        alumnoRepository.deleteById(id);
+    }
+
+    @PutMapping("/alumnos/{id}")
+    public Alumno update(@PathVariable Long id, @RequestBody Alumno alumno) {
+        alumno.setId(id);
+        return alumnoRepository.save(alumno);
+    }
+
+    @PostMapping("/alumnos")
+    public Alumno create(@RequestBody Alumno alumno) {
+        return alumnoRepository.save(alumno);
+    }
+
 }
