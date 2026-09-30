@@ -51,28 +51,32 @@ public class AlumnoController {
 
     //DELETE http://localhost:8080/alumnos/5
     @DeleteMapping("/alumnos/{id}")
-    public void deleteById(@PathVariable Long id)
+    public ResponseEntity<Void> deleteById(@PathVariable Long id)
     {
         alumnoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();  //204 No Content (El estándar cuando borramos)
     }
 
     //PUT http://localhost:8080/alumnos/5
     @PutMapping("/alumnos/{id}")
-    public Alumno update(@PathVariable Long id, @RequestBody Alumno alumno) {
+    public ResponseEntity<Alumno> update(@PathVariable Long id, @RequestBody Alumno alumno) {
+        if (!alumnoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         alumno.setId(id);
-        return alumnoRepository.save(alumno);
+        return ResponseEntity.ok(alumnoRepository.save(alumno));
     }
 
     //POST http://localhost:8080/alumnos
     @PostMapping("/alumnos")
-    public Alumno create(@RequestBody Alumno alumno) {
-        return alumnoRepository.save(alumno);
+    public ResponseEntity<Alumno> create(@RequestBody Alumno alumno) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(alumnoRepository.save(alumno));
     }
 
     //PATCH http://localhost:8080/alumnos/5/importe-beca
     //PATCH se utiliza par modificar campos concretos de un objeto
     @PatchMapping("/alumnos/{id}/importe-beca")
-    public Alumno modifyImporteBeca(@PathVariable Long id, @RequestBody BigDecimal importeBeca) {
+    public ResponseEntity<Alumno> modifyImporteBeca(@PathVariable Long id, @RequestBody BigDecimal importeBeca) {
 /*        Optional<Alumno> alumnoOptional = alumnoRepository.findById(id);
         if(alumnoOptional.isPresent())
         {
@@ -87,10 +91,10 @@ public class AlumnoController {
         return alumnoRepository.findById(id)
                 .map(alumno -> {    //Si el alumno existe en la BD ejecuta .map
                     alumno.setImporteBeca(importeBeca);
-                    return alumnoRepository.save(alumno);
+                    return ResponseEntity.ok(alumnoRepository.save(alumno));
                 })
                 .orElseGet(() -> {      //Si el alumno no existe en la BD ejecuta .orElseGet
-                    return null;
+                    return ResponseEntity.notFound().build();
                 });
     }
 }
