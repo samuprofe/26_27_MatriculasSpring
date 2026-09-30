@@ -16,7 +16,7 @@ public class CursoController {
     private CursoRepository cursoRepository;
 
     //GET http://localhost:8080/cursos --> Obtiene todos los cursos
-    @GetMapping("/cursos")
+    @GetMapping("/cursos")  //EndPoint
     public List<Curso> findAll() {
         return cursoRepository.findAll();
     }
@@ -30,6 +30,7 @@ public class CursoController {
     //DELETE http://localhost:8080/cursos/{id} --> Borra un curso
     @DeleteMapping("/cursos/{id}")
     public void deleteById(@PathVariable Long id) {
+
         cursoRepository.deleteById(id);
     }
 
