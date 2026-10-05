@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter @Setter @Builder @NoArgsConstructor
 @AllArgsConstructor
@@ -34,4 +35,7 @@ public class Alumno {
 
     @Column(precision = 7, scale = 3) //dentre 0 y 999.999,99
     private BigDecimal ImporteBeca;
+
+    @OneToMany(mappedBy = "alumno", cascade = CascadeType.REMOVE)
+    private List<Matricula> matriculas;
 }

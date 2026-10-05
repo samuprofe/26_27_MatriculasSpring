@@ -24,6 +24,7 @@
 - Para código nuevo, prefiere inyección por constructor. Evita combinar inyección por campo y por constructor en la misma clase.
 - Mantén las entidades y sus mapeos JPA compatibles con el esquema y el comportamiento ya existentes. No cambies contratos o rutas sin que la tarea lo pida.
 - No añadas dependencias, capas o abstracciones nuevas si la funcionalidad puede implementarse con las tecnologías y patrones actuales.
+- Utiliza el patrón Builder en las Entidades.
 
 ## Configuración y secretos
 

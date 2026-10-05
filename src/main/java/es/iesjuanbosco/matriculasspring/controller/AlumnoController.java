@@ -54,6 +54,24 @@ public class AlumnoController {
     }
 
     //DELETE http://localhost:8080/alumnos/5
+    /**
+     * Elimina un alumno por su identificador.
+     *
+     * <p>Endpoint REST: {@code DELETE /alumnos/{id}}</p>
+     *
+     * <p>Comportamiento actual:</p>
+     * <ul>
+     *   <li>Invoca {@code alumnoRepository.deleteById(id)} para borrar el registro.</li>
+     *   <li>Si la operación finaliza sin excepción, devuelve {@code 204 No Content}.</li>
+     * </ul>
+     *
+     * <p>Nota: si el id no existe, {@code deleteById} puede lanzar una excepción
+     * ({@code EmptyResultDataAccessException}) según la implementación de Spring Data/JPA
+     * y cómo esté configurado el manejo global de errores.</p>
+     *
+     * @param id identificador del alumno que se desea eliminar
+     * @return respuesta HTTP sin cuerpo con estado {@code 204 No Content} cuando el borrado se procesa correctamente
+     */
     @DeleteMapping("/alumnos/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id)
     {
