@@ -3,6 +3,8 @@ package es.iesjuanbosco.matriculasspring.controller;
 import es.iesjuanbosco.matriculasspring.entity.Curso;
 import es.iesjuanbosco.matriculasspring.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,37 +25,45 @@ public class CursoController {
 
     //GET http://localhost:8080/cursos/{id} --> Obtiene un curso
     @GetMapping("/cursos/{id}")
-    public Curso findById(@PathVariable Long id) {
-        return cursoRepository.findById(id).get();
+    public ResponseEntity<Curso> findById(@PathVariable Long id) {
+        return cursoRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     //DELETE http://localhost:8080/cursos/{id} --> Borra un curso
     @DeleteMapping("/cursos/{id}")
-    public void deleteById(@PathVariable Long id) {
-
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        if (!cursoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         cursoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     //PUT http://localhost:8080/cursos/{id} --> Modifica un curso
     @PutMapping("/cursos/{id}")
-    public Curso update(@PathVariable Long id, @RequestBody Curso curso) {
+    public ResponseEntity<Curso> update(@PathVariable Long id, @RequestBody Curso curso) {
+        if (!cursoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         curso.setId(id);
-        return cursoRepository.save(curso);
+        return ResponseEntity.ok(cursoRepository.save(curso));
     }
 
     //POST http://localhost:8080/cursos --> Inserta un curso
     //El curso lo recibe en el cuerpo de la petición en formato JSON
     //y lo recogemos en con la anotación @RequestBody
     @PostMapping("/cursos")
-    public Curso create(@RequestBody Curso curso) {
-        return cursoRepository.save(curso);
+    public ResponseEntity<Curso> create(@RequestBody Curso curso) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cursoRepository.save(curso));
     }
 
     //DELETE http://localhost:8080/cursos
     @DeleteMapping("/cursos")
-    public void deleteAll() {
+    public ResponseEntity<Void> deleteAll() {
         cursoRepository.deleteAll();
+        return ResponseEntity.noContent().build();
     }
 
 }
-

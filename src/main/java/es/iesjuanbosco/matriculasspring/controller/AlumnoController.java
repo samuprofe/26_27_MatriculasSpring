@@ -19,6 +19,10 @@ public class AlumnoController {
     @Autowired
     private AlumnoRepository alumnoRepository;
 
+    public AlumnoController(AlumnoRepository alumnoRepository) {
+        this.alumnoRepository = alumnoRepository;
+    }
+
     //GET http://localhost:8080/alumnos
     @GetMapping("/alumnos")
     public List<Alumno> findAll() {
