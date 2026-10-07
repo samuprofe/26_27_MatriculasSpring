@@ -1,6 +1,6 @@
 # MatriculasSpring
 
-Aplicación REST para gestionar alumnos y cursos de un sistema de matrículas. La API permite consultar, crear, actualizar y eliminar registros, y persiste los datos en MySQL mediante Spring Data JPA.
+Aplicación REST para gestionar alumnos, cursos y matrículas de un sistema de matrículas. La API permite consultar, crear, actualizar y eliminar registros, y persiste los datos en MySQL mediante Spring Data JPA.
 
 ## Tecnologías
 
@@ -77,6 +77,17 @@ Crear un curso con `POST /cursos`:
 }
 ```
 
+Crear una matrícula con `POST /matriculas` (el alumno y el curso deben existir):
+
+```json
+{
+  "alumno": { "id": 1 },
+  "curso": { "id": 2 },
+  "cursoLectivo": "2026/27",
+  "pagoSeguro": true
+}
+```
+
 El campo `nivel` admite `ESO`, `BACHILLERATO`, `CFGS`, `CFGM` o `CFGB`. El identificador se genera en la base de datos y no hace falta incluirlo al crear.
 
 Actualizar un alumno o curso requiere enviar el objeto completo con `PUT /alumnos/{id}` o `PUT /cursos/{id}`. El identificador de la ruta es el que se guarda. Para modificar solo el importe de la beca, usa `PATCH /alumnos/{id}/importe-beca` con un número JSON como cuerpo, por ejemplo:
@@ -101,6 +112,11 @@ Actualizar un alumno o curso requiere enviar el objeto completo con `PUT /alumno
 | `PUT` | `/cursos/{id}` | Actualizar un curso existente | `200 OK`, `404 Not Found` |
 | `DELETE` | `/cursos/{id}` | Eliminar un curso | `204 No Content`, `404 Not Found` |
 | `DELETE` | `/cursos` | Eliminar todos los cursos | `204 No Content` |
+| `GET` | `/matriculas` | Listar matrículas | `200 OK` |
+| `POST` | `/matriculas` | Matricular un alumno en un curso | `201 Created`, `400 Bad Request`, `404 Not Found` |
+| `DELETE` | `/matriculas/{id}` | Eliminar una matrícula (quitar al alumno del curso) | `204 No Content`, `404 Not Found` |
+| `GET` | `/cursos/{cursoId}/matriculas` | Matrículas de un curso | `200 OK`, `404 Not Found` |
+| `GET` | `/alumnos/{alumnoId}/matriculas` | Matrículas de un alumno | `200 OK`, `404 Not Found` |
 
 `DELETE /cursos` elimina todos los cursos; úsalo con cuidado.
 
@@ -114,7 +130,7 @@ Con un JDK 21 completo disponible, ejecuta las pruebas con:
 
 ## Estructura del código
 
-- `controller/`: controladores REST de alumnos y cursos.
+- `controller/`: controladores REST de alumnos, cursos y matrículas.
 - `entity/`: entidades JPA y sus campos.
 - `repository/`: repositorios Spring Data JPA.
 - `src/main/resources/application.properties`: configuración de la aplicación y de la conexión a MySQL.

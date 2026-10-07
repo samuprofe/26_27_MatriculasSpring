@@ -8,9 +8,11 @@
 
 ## Estructura
 
-- `controller/`: endpoints REST (`AlumnoController`, `CursoController`).
-- `entity/`: entidades JPA (`Alumno`, `Curso`).
+- `controller/`: endpoints REST (`AlumnoController`, `CursoController`, `MatriculaController`).
+- `entity/`: entidades JPA (`Alumno`, `Curso`, `Matricula`).
 - `repository/`: interfaces Spring Data basadas en `JpaRepository`.
+- Endpoints de matrículas (`MatriculaController`): `GET /matriculas`, `POST /matriculas` (cuerpo con la entidad `Matricula`: `alumno.id`, `curso.id`, `cursoLectivo`, `pagoSeguro`), `DELETE /matriculas/{id}`, `GET /cursos/{cursoId}/matriculas` y `GET /alumnos/{alumnoId}/matriculas`.
+- Las listas `matriculas` de `Alumno` y `Curso` llevan `@JsonIgnore` para evitar recursión al serializar.
 - `src/main/resources/application.properties`: configuración de la aplicación y conexión a la base de datos.
 - `src/test/`: pruebas automatizadas.
 
@@ -23,6 +25,7 @@
 - Mantén controladores centrados en HTTP y acceso a repositorios. Usa `JpaRepository` para las operaciones de persistencia existentes.
 - Para código nuevo, prefiere inyección por constructor. Evita combinar inyección por campo y por constructor en la misma clase.
 - Mantén las entidades y sus mapeos JPA compatibles con el esquema y el comportamiento ya existentes. No cambies contratos o rutas sin que la tarea lo pida.
+- De momento no utilices DTO ni `record`: los controladores trabajan directamente con las entidades JPA (`@RequestBody` y respuestas con entidades).
 - No añadas dependencias, capas o abstracciones nuevas si la funcionalidad puede implementarse con las tecnologías y patrones actuales.
 - Utiliza el patrón Builder en las Entidades.
 

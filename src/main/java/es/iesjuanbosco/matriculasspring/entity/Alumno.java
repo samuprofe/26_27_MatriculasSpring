@@ -1,5 +1,6 @@
 package es.iesjuanbosco.matriculasspring.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,7 @@ public class Alumno {
     @Column(precision = 7, scale = 3) //dentre 0 y 999.999,99
     private BigDecimal ImporteBeca;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "alumno", cascade = CascadeType.REMOVE)
     private List<Matricula> matriculas;
 }
