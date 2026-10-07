@@ -28,6 +28,8 @@
 - De momento no utilices DTO ni `record`: los controladores trabajan directamente con las entidades JPA (`@RequestBody` y respuestas con entidades).
 - No añadas dependencias, capas o abstracciones nuevas si la funcionalidad puede implementarse con las tecnologías y patrones actuales.
 - Utiliza el patrón Builder en las Entidades.
+- Cuando crees nuevos archivos ejecuta un git add <nombre_del_archivo>
+- Utiliza @Autowired en los constructores de las clases para inyectar dependencias.
 
 ## Configuración y secretos
 
