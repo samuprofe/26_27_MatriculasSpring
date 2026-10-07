@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matrículas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Gestión de matrículas</h1>
+    <nav>
+      <button class="tab active" data-tab="alumnos">Alumnos</button>
+      <button class="tab" data-tab="cursos">Cursos</button>
+      <button class="tab" data-tab="matriculas">Matrículas</button>
+    </nav>
+  </header>
+
+  <div id="mensaje" class="mensaje oculto" role="status"></div>
+
+  <main>
+    <!-- ALUMNOS -->
+    <section id="alumnos" class="panel">
+      <div class="barra">
+        <h2>Alumnos</h2>
+        <button id="nuevo-alumno" class="primario">Nuevo alumno</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Nombre</th><th>Apellidos</th><th>Email</th><th>Nacimiento</th><th>DNI</th><th>Teléfono</th><th>Beca (€)</th><th></th></tr>
+        </thead>
+        <tbody id="tabla-alumnos"></tbody>
+      </table>
+    </section>
+
+    <!-- CURSOS -->
+    <section id="cursos" class="panel oculto">
+      <div class="barra">
+        <h2>Cursos</h2>
+        <button id="nuevo-curso" class="primario">Nuevo curso</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Nombre</th><th>Abreviatura</th><th>Nivel</th><th></th></tr>
+        </thead>
+        <tbody id="tabla-cursos"></tbody>
+      </table>
+    </section>
+
+    <!-- MATRÍCULAS -->
+    <section id="matriculas" class="panel oculto">
+      <div class="barra">
+        <h2>Matrículas</h2>
+      </div>
+
+      <form id="form-matricula" class="inline">
+        <h3>Matricular alumno</h3>
+        <label>Alumno <select name="alumno" required></select></label>
+        <label>Curso <select name="curso" required></select></label>
+        <label>Curso lectivo <input name="cursoLectivo" placeholder="2026/27" required></label>
+        <label class="check"><input type="checkbox" name="pagoSeguro"> Seguro pagado</label>
+        <button type="submit" class="primario">Matricular</button>
+      </form>
+
+      <div class="filtros">
+        <label>Ver
+          <select id="filtro-tipo">
+            <option value="todas">Todas las matrículas</option>
+            <option value="curso">Por curso</option>
+            <option value="alumno">Por alumno</option>
+          </select>
+        </label>
+        <select id="filtro-valor" class="oculto"></select>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Alumno</th><th>Curso</th><th>Curso lectivo</th><th>Seguro</th><th></th></tr>
+        </thead>
+        <tbody id="tabla-matriculas"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <dialog id="dialogo">
+    <form id="form-dialogo" action="javascript:void(0)">
+      <h3 id="dialogo-titulo"></h3>
+      <div id="dialogo-campos"></div>
+      <div class="acciones">
+        <button type="button" id="dialogo-cancelar">Cancelar</button>
+        <button type="submit" class="primario">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

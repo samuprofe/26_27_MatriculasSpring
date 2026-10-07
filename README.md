@@ -120,6 +120,22 @@ Actualizar un alumno o curso requiere enviar el objeto completo con `PUT /alumno
 
 `DELETE /cursos` elimina todos los cursos; úsalo con cuidado.
 
+## Frontend
+
+La carpeta `frontend/` contiene una interfaz web en HTML, CSS y JavaScript puro (sin frameworks) para gestionar alumnos y cursos (CRUD), matricular y desmatricular alumnos, y consultar matrículas por curso o alumno.
+
+1. Arranca el backend (`./mvnw spring-boot:run`).
+2. Sirve la carpeta del frontend, por ejemplo:
+
+   ```bash
+   cd frontend
+   python3 -m http.server 5500
+   ```
+
+3. Abre `http://localhost:5500`.
+
+La URL del backend se configura en `frontend/js/config.js`. `CorsConfig` permite las peticiones desde cualquier origen, por lo que también puedes abrir `index.html` directamente.
+
 ## Pruebas
 
 Con un JDK 21 completo disponible, ejecuta las pruebas con:
@@ -134,4 +150,5 @@ Con un JDK 21 completo disponible, ejecuta las pruebas con:
 - `entity/`: entidades JPA y sus campos.
 - `repository/`: repositorios Spring Data JPA.
 - `src/main/resources/application.properties`: configuración de la aplicación y de la conexión a MySQL.
+- `frontend/`: interfaz web estática (`index.html`, `css/`, `js/`).
 - `src/test/`: pruebas automatizadas.

@@ -11,6 +11,7 @@
 - `controller/`: endpoints REST (`AlumnoController`, `CursoController`, `MatriculaController`).
 - `entity/`: entidades JPA (`Alumno`, `Curso`, `Matricula`).
 - `repository/`: interfaces Spring Data basadas en `JpaRepository`.
+- `frontend/`: cliente web con HTML, CSS y JavaScript puro (sin frameworks ni librerías CSS); la URL de la API está en `frontend/js/config.js`. `CorsConfig` habilita CORS para cualquier origen (solo desarrollo).
 - Endpoints de matrículas (`MatriculaController`): `GET /matriculas`, `POST /matriculas` (cuerpo con la entidad `Matricula`: `alumno.id`, `curso.id`, `cursoLectivo`, `pagoSeguro`), `DELETE /matriculas/{id}`, `GET /cursos/{cursoId}/matriculas` y `GET /alumnos/{alumnoId}/matriculas`.
 - Las listas `matriculas` de `Alumno` y `Curso` llevan `@JsonIgnore` para evitar recursión al serializar.
 - `src/main/resources/application.properties`: configuración de la aplicación y conexión a la base de datos.
