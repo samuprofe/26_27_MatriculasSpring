@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,35 @@ public class Curso {
     @JsonIgnore
     @OneToMany(mappedBy = "curso", cascade = CascadeType.REMOVE)
     private List<Matricula> matriculas;
+
+    @ManyToMany
+    private List<Materia> materias;
+
+    public void addMateria(Materia materia) {
+        if (materias == null) {
+            materias = new ArrayList<>();
+        }
+        if (!materias.contains(materia)) {
+            materias.add(materia);
+            if (materia.getCursos() == null) {
+                materia.setCursos(new ArrayList<>());
+            }
+            materia.getCursos().add(this);
+        }
+    }
+
+    public boolean removeMateria(Materia materia) {
+        if (materias == null) {
+            return false;
+        }
+        if(!materias.remove(materia)) {
+            return false;
+        }
+        if (materia.getCursos() != null) {
+            materia.getCursos().remove(this);
+        }
+        return true;
+    }
 
     public enum Nivel {
         ESO,

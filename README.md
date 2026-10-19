@@ -152,3 +152,8 @@ Con un JDK 21 completo disponible, ejecuta las pruebas con:
 - `src/main/resources/application.properties`: configuración de la aplicación y de la conexión a MySQL.
 - `frontend/`: interfaz web estática (`index.html`, `css/`, `js/`).
 - `src/test/`: pruebas automatizadas.
+
+## TODO 
+- Añadir Entidad Usuario (email, nombre, apellidos, password, rol, fechaNacimiento)
+- Registrar qué usuario añade cada matricula
+- Añadir repositorio y controlador para Usuario (sólo registrar, sin seguridad)

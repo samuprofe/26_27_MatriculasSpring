@@ -28,5 +28,8 @@ public class Matricula {
 
     @ManyToOne
     private Curso curso;
+
+    @ManyToOne
+    private Usuario usuario;
 }
 
