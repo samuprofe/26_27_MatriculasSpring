@@ -29,25 +29,16 @@ public class Curso {
     private List<Matricula> matriculas;
 
     @ManyToMany
-    private List<Materia> materias;
+    private List<Materia> materias = new ArrayList<>();
 
     public void addMateria(Materia materia) {
-        if (materias == null) {
-            materias = new ArrayList<>();
-        }
-        if (!materias.contains(materia)) {
+        if (!materias.contains(materia)) {  //Si no existe ya la materia en el curso
             materias.add(materia);
-            if (materia.getCursos() == null) {
-                materia.setCursos(new ArrayList<>());
-            }
             materia.getCursos().add(this);
         }
     }
 
     public boolean removeMateria(Materia materia) {
-        if (materias == null) {
-            return false;
-        }
         if(!materias.remove(materia)) {
             return false;
         }

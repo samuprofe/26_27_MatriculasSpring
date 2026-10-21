@@ -81,11 +81,11 @@ public class CursoController {
         Materia materia = materiaRepository.findById(materiaId).orElse(null);
         //Si el curso o la materia no existen, devolvemos un 404 Not Found
         if (curso == null || materia == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); // 404 Not Found
         }
         //Actualiza ambos lados de la relación (si la materia ya estaba en el curso no hace nada)
         curso.addMateria(materia);
-        return ResponseEntity.ok(cursoRepository.save(curso));
+        return ResponseEntity.ok(cursoRepository.save(curso)); //200 OK
     }
 
     //DELETE http://localhost:8080/cursos/{cursoId}/materias/{materiaId} --> Quita una materia del curso
@@ -93,11 +93,14 @@ public class CursoController {
     public ResponseEntity<Void> removeMateria(@PathVariable Long cursoId, @PathVariable Long materiaId) {
         Curso curso = cursoRepository.findById(cursoId).orElse(null);
         Materia materia = materiaRepository.findById(materiaId).orElse(null);
-        if (curso == null || materia == null || !curso.removeMateria(materia)) {
+        if (curso == null || materia == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if(!curso.removeMateria(materia)){
             return ResponseEntity.notFound().build();
         }
         cursoRepository.save(curso);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build(); //204 No Content
     }
 
 }
