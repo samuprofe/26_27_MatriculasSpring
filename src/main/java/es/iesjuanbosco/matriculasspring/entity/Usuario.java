@@ -33,6 +33,9 @@ public class Usuario {
 
     private LocalDateTime fechaUltimaModificacion;
 
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private DetalleUsuario detalleUsuario;
+
     @JsonIgnore //Al convertir a JSON, no incluir la lista de matriculas para evitar bucles infinitos
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.REMOVE)
     private List<Matricula> matriculas;
