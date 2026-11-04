@@ -1,5 +1,6 @@
 package es.iesjuanbosco.matriculasspring.controller;
 
+import es.iesjuanbosco.matriculasspring.DTO.MatriculaResumenResponse;
 import es.iesjuanbosco.matriculasspring.entity.Alumno;
 import es.iesjuanbosco.matriculasspring.entity.Curso;
 import es.iesjuanbosco.matriculasspring.entity.Matricula;
@@ -84,5 +85,20 @@ public class MatriculaController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(matriculaRepository.findByAlumnoId(alumnoId));
+    }
+
+    //Devuelve un listado de MatriculaResumenResponse (nombreAlumno, nombreCurso)
+    @GetMapping("/matriculas/resumen")
+    public ResponseEntity<?> getMatriculasResumen() {
+
+        List<MatriculaResumenResponse> resumenList = matriculaRepository.findAll().stream()
+                .map(matricula -> MatriculaResumenResponse.builder()
+                        .nombreAlumno(matricula.getAlumno().getNombre())
+                        .nombreCurso(matricula.getCurso().getNombre())
+                        .idMatricula(matricula.getId())
+                        .build())
+                .toList();
+
+        return ResponseEntity.ok(resumenList);
     }
 }

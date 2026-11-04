@@ -13,7 +13,6 @@ import java.util.List;
 /*
 - Registrar qué usuario añade cada matricula
 - Añadir repositorio y controlador para Usuario (sólo registrar, sin seguridad)
-
  */
 @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
 @Entity
@@ -50,6 +49,7 @@ public class Usuario {
     // Se ejecuta automáticamente antes de actualizar un usuario existente
     @PreUpdate
     protected void onUpdate() {
+
         this.fechaUltimaModificacion = LocalDateTime.now();
     }
 }

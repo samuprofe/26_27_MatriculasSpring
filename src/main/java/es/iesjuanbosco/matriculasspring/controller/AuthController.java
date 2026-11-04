@@ -1,5 +1,7 @@
 package es.iesjuanbosco.matriculasspring.controller;
 
+import es.iesjuanbosco.matriculasspring.DTO.UsuarioRequest;
+import es.iesjuanbosco.matriculasspring.DTO.UsuarioResponse;
 import es.iesjuanbosco.matriculasspring.entity.Usuario;
 import es.iesjuanbosco.matriculasspring.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,22 @@ public class AuthController {
     private int HttpStatusCode;
 
     @PostMapping("/register")
-    public ResponseEntity<Usuario> register(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponse> register(@RequestBody UsuarioRequest usuarioRequest) {
+        Usuario usuario = Usuario.builder()
+                .apellidos(usuarioRequest.getApellidos())
+                .email(usuarioRequest.getEmail())
+                .fechaNacimiento(usuarioRequest.getFechaNacimiento())
+                .nombre(usuarioRequest.getNombre())
+                .password(usuarioRequest.getPassword())
+                .build();
         usuarioRepository.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuario); // Devuelve el usuario registrado (esto es solo un ejemplo)
+        UsuarioResponse respuesta = UsuarioResponse.builder()
+                .id(usuario.getId())
+                .email(usuario.getEmail())
+                .nombre(usuario.getNombre())
+                .apellidos(usuario.getApellidos())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
 }
