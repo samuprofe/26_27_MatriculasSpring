@@ -23,8 +23,4 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuario); // Devuelve el usuario registrado (esto es solo un ejemplo)
     }
 
-    @GetMapping ("/usuarios")
-    public ResponseEntity<?> getUsuarios() {
-        return ResponseEntity.ok(usuarioRepository.findAll());
-    }
 }

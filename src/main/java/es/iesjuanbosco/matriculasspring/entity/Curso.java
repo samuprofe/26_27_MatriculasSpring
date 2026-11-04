@@ -29,6 +29,7 @@ public class Curso {
     private List<Matricula> matriculas;
 
     @ManyToMany
+    @Builder.Default
     private List<Materia> materias = new ArrayList<>();
 
     public void addMateria(Materia materia) {

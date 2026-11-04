@@ -13,6 +13,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
     //Encontrar todos los usuarios que el nombre contenta un texto sin importar mayusculas
     List<Usuario> findByNombreContainingIgnoreCase(String nombre);
     Optional<Usuario> findByEmailIgnoreCase(String email);
-    Optional<Usuario> findByNombreTop1ByOrderByNombreAsc(String nombre);
+    Optional<Usuario> findTop1ByNombreOrderByNombreAsc(String nombre);
 
 }

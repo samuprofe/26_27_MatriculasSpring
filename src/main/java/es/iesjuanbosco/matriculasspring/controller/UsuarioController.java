@@ -1,5 +1,6 @@
 package es.iesjuanbosco.matriculasspring.controller;
 
+import es.iesjuanbosco.matriculasspring.DTO.UsuarioResponse;
 import es.iesjuanbosco.matriculasspring.entity.DetalleUsuario;
 import es.iesjuanbosco.matriculasspring.entity.Usuario;
 import es.iesjuanbosco.matriculasspring.repository.DetalleUsuarioRepository;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -63,5 +66,36 @@ public class UsuarioController {
     public ResponseEntity<List<Usuario>> buscarUsuariosPorNombre(@RequestParam String nombre) {
         return ResponseEntity.ok(usuarioRepository.findByNombreContainingIgnoreCase(nombre));
 
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getUsuarios() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        //Convierto la lista de usuarios a una lista de DTOs para no devolver la contraseña
+        List<UsuarioResponse> usuariosResponseList = new ArrayList<>();
+        usuarios.forEach(usuario -> {
+            usuariosResponseList.add(
+                    UsuarioResponse.builder()
+                    .email(usuario.getEmail())
+                    .nombre(usuario.getNombre())
+                    .apellidos(usuario.getApellidos())
+                    .id(usuario.getId())
+                    .build());
+        });
+
+        return ResponseEntity.ok(usuariosResponseList);
+
+        /*
+        List<UsuarioResponse> usuariosResponse = usuarios.stream()
+                .map(usuario -> {
+                    UsuarioResponse usuarioResponse = new Usuario();
+                    usuarioResponse.setNombre(usuario.getNombre());
+                    usuarioResponse.setEmail(usuario.getEmail());
+                    usuarioResponse.setPassword(null); // No devolver la contraseña
+                    return usuarioResponse;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(usuariosResponse);
+        */
     }
 }
