@@ -9,6 +9,8 @@
 ## Estructura
 
 - `controller/`: endpoints REST (`AlumnoController`, `CursoController`, `MatriculaController`, `UsuarioController`).
+- `service/`: servicios con la lógica de negocio y el acceso a repositorios para alumnos, cursos, materias, matrículas, usuarios y detalle de usuarios; `AuthService` gestiona el registro de usuarios.
+- `exception/`: manejadores globales de excepciones REST.
 - `entity/`: entidades JPA (`Alumno`, `Curso`, `Matricula`, `Usuario`, `DetalleUsuario`).
 - `repository/`: interfaces Spring Data basadas en `JpaRepository`.
 - `frontend/`: cliente web con HTML, CSS y JavaScript puro (sin frameworks ni librerías CSS); la URL de la API está en `frontend/js/config.js`. `CorsConfig` habilita CORS para cualquier origen (solo desarrollo).
@@ -23,15 +25,15 @@
 - Conserva los nombres, rutas y estilo de las clases existentes, salvo que la tarea requiera cambiarlos.
 - Para nuevos endpoints REST, usa las anotaciones de Spring MVC y rutas con recursos en plural, como `/alumnos` y `/cursos`.
 - Devuelve códigos HTTP explícitos y coherentes. Usa `ResponseEntity` cuando la respuesta dependa del resultado: `200 OK` para consultas o actualizaciones correctas, `201 Created` al crear, `204 No Content` al borrar y `404 Not Found` cuando no exista el recurso solicitado.
+- El manejador global devuelve errores de validación como un mapa de campo a mensaje y responde con `400 Bad Request`.
+- `POST /register` devuelve `409 Conflict` con `{"error":"El email ya está registrado"}` cuando el email está repetido; `GlobalExceptionHandler` gestiona `EmailRepetidoExpepcion`.
+- Los controladores no acceden directamente a repositorios: delegan en servicios, y toda lógica de negocio se implementa siempre en servicios. Hay servicios para alumnos, cursos, materias, matrículas, usuarios y detalle de usuarios.
 - No uses `Optional.get()` sin comprobar antes si el valor está presente; maneja el caso no encontrado explícitamente.
-- Mantén controladores centrados en HTTP y acceso a repositorios. Usa `JpaRepository` para las operaciones de persistencia existentes.
-- Para código nuevo, prefiere inyección por constructor. Evita combinar inyección por campo y por constructor en la misma clase.
-- Mantén las entidades y sus mapeos JPA compatibles con el esquema y el comportamiento ya existentes. No cambies contratos o rutas sin que la tarea lo pida.
-- De momento no utilices DTO ni `record`: los controladores trabajan directamente con las entidades JPA (`@RequestBody` y respuestas con entidades).
-- No añadas dependencias, capas o abstracciones nuevas si la funcionalidad puede implementarse con las tecnologías y patrones actuales.
+- Mantén los controladores centrados en HTTP. Usa `JpaRepository` para las operaciones de persistencia existentes desde los servicios.
+- Utiliza siempre inyección de dependencias por constructor, no por campos ni setters. Si la clase tiene un único constructor, no añadas `@Autowired`; úsalo solo cuando sea necesario para seleccionar el constructor.
+- Se recomienda usar DTOs para las entradas y salidas de la API: los DTOs de entrada terminan en `Request` y los de salida en `Response`.
 - Utiliza el patrón Builder en las Entidades.
 - Cuando crees nuevos archivos ejecuta un git add <nombre_del_archivo>
-- Utiliza @Autowired en los constructores de las clases para inyectar dependencias.
 
 ## Configuración y secretos
 
