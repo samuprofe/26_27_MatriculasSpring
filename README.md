@@ -7,6 +7,7 @@ Aplicación REST para gestionar alumnos, cursos y matrículas de un sistema de m
 - Java 21
 - Spring Boot 4.1.1 y Spring MVC
 - Spring Data JPA / Hibernate
+- Spring Security y JWT
 - MySQL
 - Maven (incluye Maven Wrapper)
 
@@ -14,7 +15,7 @@ Aplicación REST para gestionar alumnos, cursos y matrículas de un sistema de m
 
 - JDK 21 instalado y disponible (`java` y `javac`).
 - MySQL en ejecución y permisos para crear o utilizar la base de datos `matriculas`.
-- Postman para enviar peticiones a la API.
+- Un navegador para usar el frontend; Postman es opcional para probar la API.
 
 ## Instalación y ejecución
 
@@ -43,13 +44,25 @@ Aplicación REST para gestionar alumnos, cursos y matrículas de un sistema de m
 
    Spring Boot inicia el servidor en `http://localhost:8080`. Hibernate está configurado para actualizar el esquema de la base de datos (`spring.jpa.hibernate.ddl-auto=update`).
 
+## Autenticación y seguridad
+
+Las rutas `/auth/**` son públicas. El resto de la API requiere un JWT válido en la cabecera `Authorization: Bearer <token>`. La aplicación no utiliza sesiones de servidor.
+
+1. Registra una cuenta con `POST /auth/register` y un cuerpo JSON con `nombre`, `email` y `password`. También puedes incluir `apellidos` y `fechaNacimiento` (formato `AAAA-MM-DD`). El registro crea un usuario activo con `ROLE_USER` y guarda la contraseña cifrada con BCrypt. Si el email ya existe, responde `409 Conflict`.
+2. Inicia sesión con `POST /auth/login`, enviando un JSON con `email` y `password`. Si las credenciales son correctas, la respuesta `200 OK` contiene el campo `token`; si no lo son, devuelve `401 Unauthorized`.
+3. Envía el token en la cabecera `Authorization` de cada petición a una ruta protegida. No envíes un token inválido a las rutas públicas, ya que también se intentará validar.
+
+Los JWT se firman con HS256, tienen el emisor `App-Matriculas` y caducan a las 24 horas. La clave de firma se genera al iniciar la aplicación: al reiniciarla, los tokens anteriores dejan de ser válidos y hay que iniciar sesión de nuevo. Esta configuración, así como CORS abierto a cualquier origen y el almacenamiento del token en `localStorage`, están orientados al desarrollo y deben revisarse antes de desplegar en producción.
+
 ## Uso desde Postman
 
 1. Asegúrate de que MySQL y la aplicación estén en ejecución.
 2. Crea una petición en Postman y utiliza `http://localhost:8080` como base URL.
-3. Selecciona el método HTTP correspondiente y añade la ruta indicada en la tabla de endpoints.
-4. Para `POST`, `PUT` y `PATCH`, selecciona **Body → raw → JSON** y establece `Content-Type: application/json`.
-5. Envía la petición y consulta el código HTTP y el cuerpo de la respuesta.
+3. Registra un usuario y solicita un token mediante las rutas de autenticación descritas arriba.
+4. En las peticiones protegidas, selecciona **Authorization → Bearer Token** y pega el token recibido.
+5. Selecciona el método HTTP correspondiente y añade la ruta indicada en la tabla de endpoints.
+6. Para `POST`, `PUT` y `PATCH`, selecciona **Body → raw → JSON** y establece `Content-Type: application/json`.
+7. Envía la petición y consulta el código HTTP y el cuerpo de la respuesta.
 
 ### Ejemplos
 
@@ -100,6 +113,8 @@ Actualizar un alumno o curso requiere enviar el objeto completo con `PUT /alumno
 
 | Método | Ruta | Uso | Respuestas principales |
 |---|---|---|---|
+| `POST` | `/auth/register` | Registrar una cuenta | `201 Created`, `400 Bad Request`, `409 Conflict` |
+| `POST` | `/auth/login` | Iniciar sesión y obtener un JWT | `200 OK`, `400 Bad Request`, `401 Unauthorized` |
 | `GET` | `/alumnos` | Listar alumnos | `200 OK` |
 | `GET` | `/alumnos/{id}` | Consultar un alumno | `200 OK`, `404 Not Found` |
 | `POST` | `/alumnos` | Crear un alumno | `201 Created` |
@@ -122,7 +137,7 @@ Actualizar un alumno o curso requiere enviar el objeto completo con `PUT /alumno
 
 ## Frontend
 
-La carpeta `frontend/` contiene una interfaz web en HTML, CSS y JavaScript puro (sin frameworks) para gestionar alumnos y cursos (CRUD), matricular y desmatricular alumnos, y consultar matrículas por curso o alumno.
+La carpeta `frontend/` contiene una interfaz web en HTML, CSS y JavaScript puro (sin frameworks) para registrarse e iniciar sesión, gestionar alumnos y cursos (CRUD), matricular y desmatricular alumnos, y consultar matrículas por curso o alumno.
 
 1. Arranca el backend (`./mvnw spring-boot:run`).
 2. Sirve la carpeta del frontend, por ejemplo:
@@ -133,6 +148,8 @@ La carpeta `frontend/` contiene una interfaz web en HTML, CSS y JavaScript puro 
    ```
 
 3. Abre `http://localhost:5500`.
+
+La página inicial muestra el login y un enlace al registro. Tras iniciar sesión, el token se guarda en `localStorage` y se envía automáticamente a la API; el botón **Cerrar sesión** lo elimina. Si una petición protegida devuelve `401`, el frontend elimina el token y vuelve al login.
 
 La URL del backend se configura en `frontend/js/config.js`. `CorsConfig` permite las peticiones desde cualquier origen, por lo que también puedes abrir `index.html` directamente.
 
@@ -146,14 +163,14 @@ Con un JDK 21 completo disponible, ejecuta las pruebas con:
 
 ## Estructura del código
 
-- `controller/`: controladores REST de alumnos, cursos y matrículas.
+- `controller/`: controladores REST, incluido el de autenticación.
+- `service/`: servicios de negocio y autenticación, incluida la generación JWT.
+- `config/`: configuración de seguridad.
 - `entity/`: entidades JPA y sus campos.
 - `repository/`: repositorios Spring Data JPA.
 - `src/main/resources/application.properties`: configuración de la aplicación y de la conexión a MySQL.
 - `frontend/`: interfaz web estática (`index.html`, `css/`, `js/`).
 - `src/test/`: pruebas automatizadas.
 
-## TODO 
-- Añadir Entidad Usuario (email, nombre, apellidos, password, rol, fechaNacimiento)
-- Registrar qué usuario añade cada matricula
-- Añadir repositorio y controlador para Usuario (sólo registrar, sin seguridad)
+## TODO
+- Registrar qué usuario añade cada matrícula.

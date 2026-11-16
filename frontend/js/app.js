@@ -269,7 +269,88 @@ function filaVacia(columnas, texto) {
   return el("tr", {}, el("td", { colSpan: columnas, className: "vacio", textContent: texto }));
 }
 
-/* ---------- Inicio ---------- */
-ejecutar(async () => {
-  await Promise.all([cargarAlumnos(), cargarCursos()]);
-});
+/* ---------- Acceso ---------- */
+function mostrarAcceso(registro = false) {
+  $("acceso").classList.remove("oculto");
+  $("aplicacion").classList.add("oculto");
+  $("navegacion").classList.add("oculto");
+  $("login").classList.toggle("oculto", registro);
+  $("registro").classList.toggle("oculto", !registro);
+  $("form-login").reset();
+  $("form-registro").reset();
+  if ($("dialogo").open) $("dialogo").close();
+  alumnos = [];
+  cursos = [];
+  ["tabla-alumnos", "tabla-cursos", "tabla-matriculas"].forEach((id) => $(id).replaceChildren());
+  $("form-matricula").reset();
+  $("form-matricula").querySelectorAll("select").forEach((select) => select.replaceChildren());
+  $("filtro-tipo").value = "todas";
+  $("filtro-valor").replaceChildren();
+  $("filtro-valor").classList.add("oculto");
+}
+
+function mostrarAplicacion() {
+  $("acceso").classList.add("oculto");
+  $("aplicacion").classList.remove("oculto");
+  $("navegacion").classList.remove("oculto");
+  document.querySelectorAll(".tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === "alumnos"));
+  document.querySelectorAll(".panel").forEach((p) => {
+    if (p.closest("#aplicacion")) p.classList.toggle("oculto", p.id !== "alumnos");
+  });
+  ejecutar(async () => {
+    await Promise.all([cargarAlumnos(), cargarCursos()]);
+  });
+}
+
+$("ir-registro").onclick = (ev) => { ev.preventDefault(); mostrarAcceso(true); };
+$("ir-login").onclick = (ev) => { ev.preventDefault(); mostrarAcceso(); };
+
+$("form-login").onsubmit = async (ev) => {
+  ev.preventDefault();
+  const formulario = ev.currentTarget;
+  const datos = Object.fromEntries(new FormData(formulario));
+  const boton = formulario.querySelector("button[type=submit]");
+  boton.disabled = true;
+  try {
+    const respuesta = await api.auth.login(datos);
+    if (typeof respuesta.token !== "string" || !respuesta.token) {
+      throw new Error("La respuesta del servidor no contiene un token");
+    }
+    sesion.guardar(respuesta.token);
+    formulario.reset();
+    mostrarAplicacion();
+  } catch (e) {
+    mostrarMensaje(e.message, true);
+  } finally {
+    boton.disabled = false;
+  }
+};
+
+$("form-registro").onsubmit = async (ev) => {
+  ev.preventDefault();
+  const formulario = ev.currentTarget;
+  const datos = Object.fromEntries(new FormData(formulario));
+  datos.fechaNacimiento = datos.fechaNacimiento || null;
+  const boton = formulario.querySelector("button[type=submit]");
+  boton.disabled = true;
+  try {
+    await api.auth.registro(datos);
+    mostrarAcceso();
+    mostrarMensaje("Cuenta creada. Ya puedes iniciar sesión");
+  } catch (e) {
+    mostrarMensaje(e.message, true);
+  } finally {
+    boton.disabled = false;
+  }
+};
+
+$("cerrar-sesion").onclick = () => {
+  sesion.cerrar();
+  mostrarAcceso();
+  mostrarMensaje("Sesión cerrada");
+};
+
+window.addEventListener("sesion-caducada", () => mostrarAcceso());
+
+if (sesion.token()) mostrarAplicacion();
+else mostrarAcceso();

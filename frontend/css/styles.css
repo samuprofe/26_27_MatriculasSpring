@@ -25,6 +25,7 @@ h1 { margin: 0 0 .75rem; font-size: 1.5rem; }
 h2, h3 { margin: 0; }
 
 nav { display: flex; gap: .25rem; }
+nav #cerrar-sesion { margin-left: auto; align-self: center; }
 
 .tab {
   border: none;
@@ -44,6 +45,11 @@ main { max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; }
   border-radius: 8px;
   padding: 1rem 1.5rem;
 }
+
+.acceso { max-width: 460px; margin: 3rem auto; }
+.form-acceso { display: grid; gap: .75rem; margin-top: 1rem; }
+.acceso p { margin-bottom: 0; }
+.acceso a { color: var(--color-oscuro); }
 
 .oculto { display: none !important; }
 
