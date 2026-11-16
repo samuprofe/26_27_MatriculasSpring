@@ -5,14 +5,18 @@ import es.iesjuanbosco.matriculasspring.DTO.UsuarioResponse;
 import es.iesjuanbosco.matriculasspring.entity.Usuario;
 import es.iesjuanbosco.matriculasspring.exception.EmailRepetidoExpepcion;
 import es.iesjuanbosco.matriculasspring.repository.UsuarioRepository;
+import jakarta.validation.constraints.Size;
+import jakarta.websocket.Encoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
     private final UsuarioRepository usuarioRepository;
-
-    public AuthService(UsuarioRepository usuarioRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public AuthService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UsuarioResponse register(UsuarioRequest usuarioRequest) {
@@ -25,9 +29,12 @@ public class AuthService {
                 .email(usuarioRequest.getEmail())
                 .fechaNacimiento(usuarioRequest.getFechaNacimiento())
                 .nombre(usuarioRequest.getNombre())
-                .password(usuarioRequest.getPassword())
+                .password(passwordEncoder.encode(usuarioRequest.getPassword()))
+                .roles("ROLE_USER") // Asignar el rol de usuario por defecto
+                .activo(true)
                 .build();
         usuarioRepository.saveAndFlush(usuario);
+
         return UsuarioResponse.builder()
                 .id(usuario.getId())
                 .email(usuario.getEmail())

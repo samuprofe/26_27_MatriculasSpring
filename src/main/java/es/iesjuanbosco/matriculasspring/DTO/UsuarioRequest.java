@@ -24,6 +24,6 @@ public class UsuarioRequest {
     @NotEmpty(message = "El campo nombre no puede estar vacío")
     private String nombre;
 
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Size(min = 4, message = "La contraseña debe tener al menos 4 caracteres")
     private String password;
 }

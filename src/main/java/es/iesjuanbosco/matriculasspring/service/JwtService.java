@@ -1,0 +1,47 @@
+package es.iesjuanbosco.matriculasspring.service;
+
+import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.List;
+
+@Service
+public class JwtService {
+    private final SecretKey secretKey;
+
+    public JwtService() {
+        // Genera automáticamente una clave secreta segura de 256 bits para HS256
+        this.secretKey = Jwts.SIG.HS256.key().build();
+    }
+
+    // Genera un token JWT para un usuario autenticado
+    public String generateToken(Authentication authentication) {
+        // Roles del usuario como lista: ["ROLE_USER", "ROLE_ADMIN"]
+        // Filtramos por ROLE_ porque Spring Security también añade "FACTOR_PASSWORD" al hacer login
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(authority -> authority.startsWith("ROLE_"))
+                .toList();
+
+        // Construir el token JWT
+        return Jwts.builder()
+                .subject(authentication.getName())  // Email del usuario
+                .issuer("App-Matriculas")       // Quién emite el token
+                .issuedAt(new Date())               // Cuándo se creó
+                .expiration(new Date(
+                        System.currentTimeMillis() + 86400000  // Expira en 24h
+                ))
+                .claim("roles", roles)              // Roles del usuario
+                .signWith(secretKey)                // Firmar con clave secreta
+                .compact();                         // Generar String del token
+    }
+
+    public SecretKey getSecretKey() {
+        return secretKey;
+    }
+}
