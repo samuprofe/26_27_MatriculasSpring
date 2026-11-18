@@ -4,6 +4,7 @@ import es.iesjuanbosco.matriculasspring.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.Customizer;
@@ -41,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()  // /auth/login y /auth/register son públicos
                         //.requestMatchers("/usuarios/miperfil").authenticated()  // Cualquier usuario autenticado puede acceder a su perfil
                         //.requestMatchers("/usuarios/**").hasAnyRole("ADMIN", "JEFE")  // Solo ADMIN y JEFE pueden acceder a /usuarios/**
+                        //.requestMatchers(HttpMethod.DELETE,"/usuarios/{usuarioId}/detalle-usuario").hasAnyRole("ADMIN", "DIRECTOR","JEFATURA","SECRETARIA") // Solo ADMIN, DIRECTOR, JEFATURA y SECRETARIA pueden eliminar detalle de usuario
                         .anyRequest().authenticated()              // Todas las demás rutas requieren autenticación
                 )
 

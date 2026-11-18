@@ -5,6 +5,7 @@ import es.iesjuanbosco.matriculasspring.entity.Usuario;
 import es.iesjuanbosco.matriculasspring.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class UsuarioController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR','JEFATURA','SECRETARIA')")
     @DeleteMapping("/{usuarioId}/detalle-usuario")
     public ResponseEntity<?> deleteDetalleUsuario(@PathVariable String usuarioId) {
         return usuarioService.deleteDetalleUsuario(usuarioId)
