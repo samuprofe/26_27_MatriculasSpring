@@ -36,7 +36,7 @@ Además de proteger `MatriculaController`, configura estas reglas mediante
 `requestMatchers`:
 
 - `/auth/**`: acceso público.
-- `GET /alumnos/**` y `GET /cursos/**`: cualquier usuario autenticado.
+- `GET /alumnos/**` y `GET /cursos/**`: cualquier usuario con rol ROLE_SECRETARIA.
 - `DELETE /cursos/**`: solo administradores.
 - El resto de peticiones: requieren autenticación.
 
